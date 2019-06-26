@@ -1,0 +1,28 @@
+---
+
+- name: Fetching the redash repo
+  git:
+     repo: https://github.com/getredash/redash.git
+     dest: "/home/redash_setup"
+  register: repo
+  
+- name: Fetching message
+  debug: msg={{ repo_err }}{{ repo.failed }}
+
+- name: Preparing for setup
+  file: 
+     path: /home/redash_setup/setup/./setup.sh
+     owner: root
+     group: root
+     mode: 700
+  register: setup
+
+- name: Setup message
+  debug: msg={{ setup_err }}{{ setup.failed }}
+ 
+- name: Executing redash setup script
+  command: /home/redash_setup/setup/./setup.sh
+  register: results
+
+- name: Setup logs
+  debug: msg={{ results.stdout_lines }}
